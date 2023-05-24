@@ -1,10 +1,10 @@
-# threejs-character-controls-example
-threejs-character-controls-example
+# Mech Hanger
+
+## Live Demo
+
+[Live Demo](https://vinny-888.github.io/threejs-character-controls-example)
+
+## Running
 
 `npm install` and `npm run start`  
   
-Try the [Stackblitz](https://stackblitz.com/github/tamani-coding/threejs-character-controls-example)  
-  
-Checkout the file `characterControls.ts` for the character controller implementation.
-
-![Screenshot](https://github.com/tamani-coding/threejs-character-controls-example/blob/main/screenshot01.png?raw=true)
