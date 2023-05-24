@@ -5,8 +5,13 @@ import { CameraHelper } from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 
+
+
+initMechContract();
+
 let prefix = '/cb-mech-hanger/src/';
 // let prefix = './';
+
 
 let scale = 5;
 // SCENE
@@ -61,38 +66,49 @@ new GLTFLoader().load(prefix+'models/Soldier.glb', function (gltf) {
 
 
 
-let mechs = [709, 16, 23, 47, 61, 66, 106, 140, 150, 155, 158, 161, 163, 172, 182, 224, 314, 326, 328, 338, 341, 348, 349, 389, 424, 428, 430, 443, 448, 452, 456, 458, 472, 478, 487, 492, 522, 525, 531, 532, 539, 540, 549, 553, 555, 629, 636, 640, 660, 682];
+// let mechs = [709, 16, 23, 47, 61, 66, 106, 140, 150, 155, 158, 161, 163, 172, 182, 224, 314, 326, 328, 338, 341, 348, 349, 389, 424, 428, 430, 443, 448, 452, 456, 458, 472, 478, 487, 492, 522, 525, 531, 532, 539, 540, 549, 553, 555, 629, 636, 640, 660, 682];
 
-let globalOffsetX = (mechs.length/4)-1 * scale * 10.5;
+let wallet: any = '0x95D2Ef8a0e56097f765478911b60D608C445CD47';
+let hasWallet: any = getUrlParameter('wallet');
 
-mechs.forEach((mech, index)=>{
+if(hasWallet){
+    wallet = hasWallet;
+}
 
-    if(index % 4 == 0){
-        new GLTFLoader().load(prefix+'models/hanger.glb', function (gltf) {
+getMechTokenBalance(wallet).then((mechIds)=>{
+    let globalOffsetX = (mechIds.length/4)-1 * scale * 10.5;
+    mechIds.forEach((mechId: any, index: number)=>{
+
+        if(index % 4 == 0){
+            new GLTFLoader().load(prefix+'models/hanger.glb', function (gltf) {
+                const model = gltf.scene;
+                model.traverse(function (object: any) {
+                    if (object.isMesh) object.castShadow = true;
+                });
+                model.position.set(0, 0, (index/4)*scale*21+globalOffsetX);
+                model.scale.set(scale,scale,scale);
+                scene.add(model);
+            });
+        }
+        
+        // new GLTFLoader().load(prefix+'models/mechs/token'+mech+'_mech_1k.glb', function (gltf) {
+            new GLTFLoader().load('https://m.cyberbrokers.com/eth/mech/'+mechId+'/files/mech_1k.glb', function (gltf) {
+            
             const model = gltf.scene;
             model.traverse(function (object: any) {
                 if (object.isMesh) object.castShadow = true;
             });
-            model.position.set(0, 0, (index/4)*scale*21+globalOffsetX);
-            model.scale.set(scale,scale,scale);
+            model.scale.set(scale*1.5,scale*1.5,scale*1.5);
+            let leftSide = index%2 == 0;
+            let spacing = scale*6;
+            let offsetX = scale*3;
+            model.position.set(leftSide ? -spacing : spacing, 0, Math.floor(index/2)*spacing - offsetX + globalOffsetX);
+            model.rotation.set(0, leftSide ? Math.PI/2 : -Math.PI/2, 0);
             scene.add(model);
         });
-    }
-    
-    new GLTFLoader().load(prefix+'models/mechs/token'+mech+'_mech_1k.glb', function (gltf) {
-        const model = gltf.scene;
-        model.traverse(function (object: any) {
-            if (object.isMesh) object.castShadow = true;
-        });
-        model.scale.set(scale*1.5,scale*1.5,scale*1.5);
-        let leftSide = index%2 == 0;
-        let spacing = scale*6;
-        let offsetX = scale*3;
-        model.position.set(leftSide ? -spacing : spacing, 0, Math.floor(index/2)*spacing - offsetX + globalOffsetX);
-        model.rotation.set(0, leftSide ? Math.PI/2 : -Math.PI/2, 0);
-        scene.add(model);
-    });
-})
+    })
+
+});
 
 // CONTROL KEYS
 const keysPressed = {  }
