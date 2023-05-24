@@ -5,6 +5,9 @@ import { CameraHelper } from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 
+let prefix = '/cb-mech-hanger/src/';
+// let prefix = './';
+
 let scale = 5;
 // SCENE
 const scene = new THREE.Scene();
@@ -39,7 +42,7 @@ generateFloor()
 
 // MODEL WITH ANIMATIONS
 var characterControls: CharacterControls
-new GLTFLoader().load('models/Soldier.glb', function (gltf) {
+new GLTFLoader().load(prefix+'models/Soldier.glb', function (gltf) {
     const model = gltf.scene;
     model.traverse(function (object: any) {
         if (object.isMesh) object.castShadow = true;
@@ -65,7 +68,7 @@ let globalOffsetX = (mechs.length/4)-1 * scale * 10.5;
 mechs.forEach((mech, index)=>{
 
     if(index % 4 == 0){
-        new GLTFLoader().load('models/hanger.glb', function (gltf) {
+        new GLTFLoader().load(prefix+'models/hanger.glb', function (gltf) {
             const model = gltf.scene;
             model.traverse(function (object: any) {
                 if (object.isMesh) object.castShadow = true;
@@ -76,7 +79,7 @@ mechs.forEach((mech, index)=>{
         });
     }
     
-    new GLTFLoader().load('models/mechs/token'+mech+'_mech_1k.glb', function (gltf) {
+    new GLTFLoader().load(prefix+'models/mechs/token'+mech+'_mech_1k.glb', function (gltf) {
         const model = gltf.scene;
         model.traverse(function (object: any) {
             if (object.isMesh) object.castShadow = true;
@@ -133,11 +136,11 @@ window.addEventListener('resize', onWindowResize);
 function generateFloor() {
     // TEXTURES
     const textureLoader = new THREE.TextureLoader();
-    const placeholder = textureLoader.load("./textures/placeholder/placeholder.png");
-    const sandBaseColor = textureLoader.load("./textures/sand/Sand 002_COLOR.png");
-    const sandNormalMap = textureLoader.load("./textures/sand/Sand 002_NRM.jpg");
-    const sandHeightMap = textureLoader.load("./textures/sand/Sand 002_DISP.jpg");
-    const sandAmbientOcclusion = textureLoader.load("./textures/sand/Sand 002_OCC.jpg");
+    const placeholder = textureLoader.load(prefix+"textures/placeholder/placeholder.png");
+    const sandBaseColor = textureLoader.load(prefix+"textures/sand/Sand 002_COLOR.png");
+    const sandNormalMap = textureLoader.load(prefix+"textures/sand/Sand 002_NRM.jpg");
+    const sandHeightMap = textureLoader.load(prefix+"textures/sand/Sand 002_DISP.jpg");
+    const sandAmbientOcclusion = textureLoader.load(prefix+"textures/sand/Sand 002_OCC.jpg");
 
     const WIDTH = 80
     const LENGTH = 80
