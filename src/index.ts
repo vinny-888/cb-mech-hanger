@@ -5,6 +5,7 @@ import { CameraHelper } from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 
+let scale = 5;
 // SCENE
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0xa8def0);
@@ -24,10 +25,10 @@ renderer.shadowMap.enabled = true
 // CONTROLS
 const orbitControls = new OrbitControls(camera, renderer.domElement);
 orbitControls.enableDamping = true
-orbitControls.minDistance = 5
-orbitControls.maxDistance = 15
+orbitControls.minDistance = 0.5
+orbitControls.maxDistance = 5
 orbitControls.enablePan = false
-orbitControls.maxPolarAngle = Math.PI / 2 - 0.05
+orbitControls.maxPolarAngle = Math.PI
 orbitControls.update();
 
 // LIGHTS
@@ -54,6 +55,41 @@ new GLTFLoader().load('models/Soldier.glb', function (gltf) {
 
     characterControls = new CharacterControls(model, mixer, animationsMap, orbitControls, camera,  'Idle')
 });
+
+
+
+let mechs = [709, 16, 23, 47, 61, 66, 106, 140, 150, 155, 158, 161, 163, 172, 182, 224, 314, 326, 328, 338, 341, 348, 349, 389, 424, 428, 430, 443, 448, 452, 456, 458, 472, 478, 487, 492, 522, 525, 531, 532, 539, 540, 549, 553, 555, 629, 636, 640, 660, 682];
+
+let globalOffsetX = (mechs.length/4)-1 * scale * 10.5;
+
+mechs.forEach((mech, index)=>{
+
+    if(index % 4 == 0){
+        new GLTFLoader().load('models/hanger.glb', function (gltf) {
+            const model = gltf.scene;
+            model.traverse(function (object: any) {
+                if (object.isMesh) object.castShadow = true;
+            });
+            model.position.set(0, 0, (index/4)*scale*21+globalOffsetX);
+            model.scale.set(scale,scale,scale);
+            scene.add(model);
+        });
+    }
+    
+    new GLTFLoader().load('models/mechs/token'+mech+'_mech_1k.glb', function (gltf) {
+        const model = gltf.scene;
+        model.traverse(function (object: any) {
+            if (object.isMesh) object.castShadow = true;
+        });
+        model.scale.set(scale*1.5,scale*1.5,scale*1.5);
+        let leftSide = index%2 == 0;
+        let spacing = scale*6;
+        let offsetX = scale*3;
+        model.position.set(leftSide ? -spacing : spacing, 0, Math.floor(index/2)*spacing - offsetX + globalOffsetX);
+        model.rotation.set(0, leftSide ? Math.PI/2 : -Math.PI/2, 0);
+        scene.add(model);
+    });
+})
 
 // CONTROL KEYS
 const keysPressed = {  }
@@ -98,7 +134,7 @@ function generateFloor() {
     // TEXTURES
     const textureLoader = new THREE.TextureLoader();
     const placeholder = textureLoader.load("./textures/placeholder/placeholder.png");
-    const sandBaseColor = textureLoader.load("./textures/sand/Sand 002_COLOR.jpg");
+    const sandBaseColor = textureLoader.load("./textures/sand/Sand 002_COLOR.png");
     const sandNormalMap = textureLoader.load("./textures/sand/Sand 002_NRM.jpg");
     const sandHeightMap = textureLoader.load("./textures/sand/Sand 002_DISP.jpg");
     const sandAmbientOcclusion = textureLoader.load("./textures/sand/Sand 002_OCC.jpg");
@@ -107,16 +143,24 @@ function generateFloor() {
     const LENGTH = 80
 
     const geometry = new THREE.PlaneGeometry(WIDTH, LENGTH, 512, 512);
-    const material = new THREE.MeshStandardMaterial(
-        {
-            map: sandBaseColor, normalMap: sandNormalMap,
-            displacementMap: sandHeightMap, displacementScale: 0.1,
-            aoMap: sandAmbientOcclusion
-        })
-    wrapAndRepeatTexture(material.map)
-    wrapAndRepeatTexture(material.normalMap)
-    wrapAndRepeatTexture(material.displacementMap)
-    wrapAndRepeatTexture(material.aoMap)
+    
+    const material = new THREE.MeshBasicMaterial({ 
+        opacity: 0.0, 
+        transparent: true, 
+        side: THREE.DoubleSide, 
+        depthWrite: false
+    });
+
+    // const material = new THREE.MeshStandardMaterial(
+    //     {
+    //         map: sandBaseColor, normalMap: sandNormalMap,
+    //         displacementMap: sandHeightMap, displacementScale: 0.1,
+    //         aoMap: sandAmbientOcclusion
+    //     })
+    // wrapAndRepeatTexture(material.map)
+    // wrapAndRepeatTexture(material.normalMap)
+    // wrapAndRepeatTexture(material.displacementMap)
+    // wrapAndRepeatTexture(material.aoMap)
     // const material = new THREE.MeshPhongMaterial({ map: placeholder})
 
     const floor = new THREE.Mesh(geometry, material)
@@ -131,7 +175,7 @@ function wrapAndRepeatTexture (map: THREE.Texture) {
 }
 
 function light() {
-    scene.add(new THREE.AmbientLight(0xffffff, 0.7))
+    scene.add(new THREE.AmbientLight(0xffffff, 2.0))
 
     const dirLight = new THREE.DirectionalLight(0xffffff, 1)
     dirLight.position.set(- 60, 100, - 10);
@@ -146,4 +190,9 @@ function light() {
     dirLight.shadow.mapSize.height = 4096;
     scene.add(dirLight);
     // scene.add( new THREE.CameraHelper(dirLight.shadow.camera))
+
+    const light = new THREE.DirectionalLight('white', 3);
+
+    light.position.set(10, 10, 10);
+    scene.add(light);
 }
