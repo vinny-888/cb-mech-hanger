@@ -9,8 +9,8 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 
 initMechContract();
 
-// let prefix = '/cb-mech-hanger/src/';
-let prefix = './';
+let prefix = '/cb-mech-hanger/src/';
+// let prefix = './';
 
 
 let scale = 5;
@@ -70,6 +70,7 @@ getMechTokenBalance(wallet).then((mechIds)=>{
         });
 
         let globalOffsetZ = ((mechIds.length/4)-1) * scale * 10.5;
+        
         model.position.set(0,0,globalOffsetZ);
         scene.add(model);
 
@@ -99,9 +100,9 @@ getMechTokenBalance(wallet).then((mechIds)=>{
             
         }
         if(index % 16 == 0){
-            const light = new THREE.DirectionalLight('white', 0.3);
+            const light = new THREE.DirectionalLight('white', 0.5);
 
-            light.position.set(0, 50, (index/16)*scale*20.5 + 30);
+            light.position.set(0, 50, (index/16)*scale*20.5 - 100);
             scene.add(light);
         }
         
