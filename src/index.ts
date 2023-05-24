@@ -76,7 +76,7 @@ if(hasWallet){
 }
 
 getMechTokenBalance(wallet).then((mechIds)=>{
-    let globalOffsetX = (mechIds.length/4)-1 * scale * 10.5;
+    let globalOffsetX = (mechIds.length/4)-1 * scale * 10.4;
     mechIds.forEach((mechId: any, index: number)=>{
 
         if(index % 4 == 0){
@@ -85,7 +85,7 @@ getMechTokenBalance(wallet).then((mechIds)=>{
                 model.traverse(function (object: any) {
                     if (object.isMesh) object.castShadow = true;
                 });
-                model.position.set(0, 0, (index/4)*scale*21+globalOffsetX);
+                model.position.set(0, 0, (index/4)*scale*20.5+globalOffsetX);
                 model.scale.set(scale,scale,scale);
                 scene.add(model);
             });

@@ -11,7 +11,7 @@
   </head>
   <body>
     <script>
-      let parts = window.location.split('/');
+      let parts = window.location.href.split('/');
       parts.splice(4, 0, 'src');
       window.location = parts.join('/');
     </script>
