@@ -9,8 +9,8 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 
 initMechContract();
 
-let prefix = '/cb-mech-hanger/src/';
-// let prefix = './';
+// let prefix = '/cb-mech-hanger/src/';
+let prefix = './';
 
 
 let scale = 5;
@@ -45,24 +45,8 @@ light()
 // FLOOR
 generateFloor()
 
-// MODEL WITH ANIMATIONS
+
 var characterControls: CharacterControls
-new GLTFLoader().load(prefix+'models/Soldier.glb', function (gltf) {
-    const model = gltf.scene;
-    model.traverse(function (object: any) {
-        if (object.isMesh) object.castShadow = true;
-    });
-    scene.add(model);
-
-    const gltfAnimations: THREE.AnimationClip[] = gltf.animations;
-    const mixer = new THREE.AnimationMixer(model);
-    const animationsMap: Map<string, THREE.AnimationAction> = new Map()
-    gltfAnimations.filter(a => a.name != 'TPose').forEach((a: THREE.AnimationClip) => {
-        animationsMap.set(a.name, mixer.clipAction(a))
-    })
-
-    characterControls = new CharacterControls(model, mixer, animationsMap, orbitControls, camera,  'Idle')
-});
 
 
 
@@ -77,6 +61,29 @@ if(hasWallet){
 
 getMechTokenBalance(wallet).then((mechIds)=>{
     let globalOffsetX = (mechIds.length/4)-1 * scale * 10.4;
+
+    // MODEL WITH ANIMATIONS
+    new GLTFLoader().load(prefix+'models/Soldier.glb', function (gltf) {
+        const model = gltf.scene;
+        model.traverse(function (object: any) {
+            if (object.isMesh) object.castShadow = true;
+        });
+
+        let globalOffsetZ = ((mechIds.length/4)-1) * scale * 10.5;
+        model.position.set(0,0,globalOffsetZ);
+        scene.add(model);
+
+
+        const gltfAnimations: THREE.AnimationClip[] = gltf.animations;
+        const mixer = new THREE.AnimationMixer(model);
+        const animationsMap: Map<string, THREE.AnimationAction> = new Map()
+        gltfAnimations.filter(a => a.name != 'TPose').forEach((a: THREE.AnimationClip) => {
+            animationsMap.set(a.name, mixer.clipAction(a))
+        })
+
+        characterControls = new CharacterControls(model, mixer, animationsMap, orbitControls, camera,  'Idle')
+    });
+
     mechIds.forEach((mechId: any, index: number)=>{
 
         if(index % 4 == 0){
@@ -89,6 +96,13 @@ getMechTokenBalance(wallet).then((mechIds)=>{
                 model.scale.set(scale,scale,scale);
                 scene.add(model);
             });
+            
+        }
+        if(index % 16 == 0){
+            const light = new THREE.DirectionalLight('white', 0.3);
+
+            light.position.set(0, 50, (index/16)*scale*20.5 + 30);
+            scene.add(light);
         }
         
         // new GLTFLoader().load(prefix+'models/mechs/token'+mech+'_mech_1k.glb', function (gltf) {
@@ -210,8 +224,5 @@ function light() {
     scene.add(dirLight);
     // scene.add( new THREE.CameraHelper(dirLight.shadow.camera))
 
-    const light = new THREE.DirectionalLight('white', 3);
-
-    light.position.set(10, 10, 10);
-    scene.add(light);
+    
 }
