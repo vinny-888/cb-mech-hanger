@@ -9,8 +9,8 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 
 initMechContract();
 
-let prefix = '/cb-mech-hanger/src/';
-// let prefix = './';
+// let prefix = '/cb-mech-hanger/src/';
+let prefix = './';
 
 
 let scale = 5;
