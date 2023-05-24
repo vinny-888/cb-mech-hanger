@@ -8,9 +8,10 @@ const genesisMechTokenContract = "0xb286ac8eff9f44e2c377c6770cad5fc78bff9ed6";
 
 let genesisMechContract = null;
 
-function getUrlParameter(name) {
-    const query = new URLSearchParams(window.location.search);
-    return query.get(name);
+function getWallet() {
+    var url = new URL(window.location);
+    var wallet = url.searchParams.get("wallet");
+    return wallet;
 }
 
 function initMechContract(){

@@ -69,7 +69,7 @@ new GLTFLoader().load(prefix+'models/Soldier.glb', function (gltf) {
 // let mechs = [709, 16, 23, 47, 61, 66, 106, 140, 150, 155, 158, 161, 163, 172, 182, 224, 314, 326, 328, 338, 341, 348, 349, 389, 424, 428, 430, 443, 448, 452, 456, 458, 472, 478, 487, 492, 522, 525, 531, 532, 539, 540, 549, 553, 555, 629, 636, 640, 660, 682];
 
 let wallet: any = '0x95D2Ef8a0e56097f765478911b60D608C445CD47';
-let hasWallet: any = getUrlParameter('wallet');
+let hasWallet: any = getWallet();
 
 if(hasWallet){
     wallet = hasWallet;
