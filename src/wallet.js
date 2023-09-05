@@ -17,7 +17,7 @@ function getWallet() {
 function initMechContract(){
     if(typeof web3 !== 'undefined'){
         console.log("window.web3 is", window.web3, "window.ethereum is", window.ethereum);
-        const web3 = new Web3(provider, {timeout: 20000});
+        const web3 = new Web3(provider, {timeout: 60000});
 
         wrapperContract = new web3.eth.Contract(tokenWrapperABI, wrapperTokenContract);
         genesisMechContract = new web3.eth.Contract(mechABI, genesisMechTokenContract);
@@ -26,7 +26,7 @@ function initMechContract(){
 
 async function getMechTokenBalance(address) {
     try{
-        let result = await wrapperContract.methods.getTokens(genesisMechTokenContract, address, 1, 739).call();
+        let result = await wrapperContract.methods.getTokens(genesisMechTokenContract, address, 1, 1385).call();
 
         console.log('getMechTokenBalance: ', result);
         return result;
